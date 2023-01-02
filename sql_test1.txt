@@ -1,0 +1,56 @@
+show databases;
+use sql_store;
+show tables;
+create table employees (Emp_id int primary key, Emp_name varchar(25), Age int, Gender char(1), Doj date, Dept varchar(20), City varchar(15), Salary float);
+describe employees;
+insert into employees values (100, 'jim', 21, 'M', '2020-10-12', 'Finance', 'blor', 20000);
+select * from employees;
+insert into employees values(101, 'kim', 22, 'M', '2020-02-12', 'IT', 'mys', 30000), (102, 'kate', 24, 'F', '2020-08-12', 'Mrkt', 'kolar', 40000),
+(103, 'rose', 25, 'F', '2020-06-12', 'IT', 'kolar', 60000),(104, 'tim', 27, 'M', '2020-03-12', 'IT', 'jbp', 40000),
+(105, 'jhon', 24, 'M', '2020-11-12', 'Mrkt', 'mys', 70000),(106, 'mary', 24, 'F', '2020-09-12', 'finance', 'kolar', 20000);
+select * from employees;
+
+select distinct city from employees;
+
+select distinct dept from employees;
+select avg(age) from employees;
+
+select dept, avg(age) as average_age from employees group by dept;
+select dept, round(avg(age),1) as average_age from employees group by dept;
+select dept, sum(salary) total_salary from employees group by dept;
+
+select city, count(emp_id) from employees group by city
+order by count(emp_id) desc;
+
+select year(Doj) as year, count(emp_id) from employees group by year(doj) order by year(doj) desc;
+
+create table sales(product_id int, selling_price float, quantity int, state varchar(20));
+insert into sales values 
+(121, 320, 3, 'CA'),(122, 340, 5, 'BA'), (123, 450, 8, 'RS'),(121, 320, 6, 'TA'),(122, 340, 10, 'BA'), (123, 450, 3, 'BA'),
+(124, 320, 5, 'RS'),(122, 340, 3, 'TA'), (123, 450, 8, 'ZA');
+select * from sales;
+select product_id, sum(selling_price * quantity) as revenue 
+from sales group by product_id;
+
+create table c_product(product_id int, cost_price float);
+insert	into c_product values(121, 270), (122, 430), (123, 231),(124,322);
+select * from c_product;
+select c.product_id, sum((s.selling_price - c.cost_price) * quantity) as profit from sales as s inner join c_product as c
+where s.product_id = c.product_id
+group by c.product_id;
+
+select * from employees;
+select dept, round(avg (salary),2) as avg_salary from employees 
+group by dept
+ having avg(salary) > 40000;
+ select * from employees;
+ select city, sum(salary) as total_salary from employees
+ group by city having sum(salary) > 30000;
+ select * from employees;
+ select dept, count(*) as total_emp from employees
+ group by dept having count(*) >1;
+ select * from employees;
+ select city, count(*) as total_emp from employees 
+ where city != 'mys' group by city having count(*) >1;
+ select * from employees;
+ select dept, count(*) as total_emp from employees group by dept having avg(salary) > 20000;

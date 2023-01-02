@@ -1,0 +1,89 @@
+create database sql_joins;
+show databases;
+use sql_joins;
+create table cricket (cricket_id int auto_increment, 
+name varchar(30), primary key(cricket_id));
+create table football (football_id int auto_increment,
+name varchar(30), primary key(football_id));
+insert into cricket(name)
+values('stuart'), ('micheal'), ('jhonson'),('hyden'), ('fleming');
+select * from cricket;
+insert into football(name)
+values('stuart'), ('jhonson'),('hyden'), ('langer'),('astle');
+select * from football;
+select * from cricket as c inner join football as f on c.name=f.name;
+
+select c.cricket_id, c.name, f.football_id, f.name 
+from cricket as c inner join football as f on c.name = f.name;
+
+use sql_store;
+show tables;
+select * from order_items;
+select * from orders;
+select * from order_items as oi inner join orders as o on oi.order_id=o.order_id;
+select oi.order_id, oi.unit_price, o.order_id  from order_items as oi inner join orders as o on oi.order_id=o.order_id;
+
+select * from order_items;
+select * from orders;
+select product_id, unit_price from order_items inner join orders using (order_id);
+select * from products;
+select * from orders;
+select * from order_items;
+select o.order_id, oi.quantity, oi.unit_price, p.product_id, sum(quantity * oi.unit_price) as revenue 
+from orders as o inner join order_items as oi on oi.order_id=o.order_id inner join
+products as p on p.product_id=oi.order_id
+group by order_id;
+
+select o.order_id,p.name,  oi.quantity, oi.unit_price, sum(quantity * oi.unit_price) as revenue 
+from orders as o inner join order_items as oi on oi.order_id=o.order_id inner join
+products as p on p.product_id=oi.order_id
+group by order_id;
+
+select * from customers;
+select * from orders;
+select c.customer_id, c.first_name, o.order_id, o.status from customers as c left join orders as o on o.customer_id=c.customer_id
+where order_id is null;
+select * from customers;
+select * from orders;
+select c.first_name, c.phone, o.order_id, o.order_date,o.comments from orders as o right join customers as c on o.order_id=c.phone;
+
+use sql_hr;
+show tables;
+select * from employees;
+select concat(m.last_name, ',', m.first_name) as manager, concat (e.last_name,',', e.first_name) as employee
+from employees as e inner join employees as m on m.employee_id=e.reports_to
+order by manager;
+
+use sql_store; 
+select * from customers;
+select * from orders;
+select c.first_name, o.order_id from customers as c left join orders as o on c.customer_id=o.customer_id
+union 
+select c.first_name, o.order_id from customers as c right join orders as o on c.customer_id=o.customer_id;
+
+# subqueries 
+
+select * from employees;
+select dept, salary from employees where salary=(select max(salary) from employees);
+select emp_name, dept, salary from employees where salary=(select max(salary) from employees);
+select avg(salary) from employees;
+select emp_name, dept, salary from employees where salary < (select avg(salary) from employees);
+
+select * from products;
+create table order_1 (order_id int, product_sold varchar(100), selling_price float);
+insert into order_1 select product_id, name, unit_price from products 
+where product_id in (select product_id from products where unit_price > 2.00);
+select * from order_1;
+
+use sql_store;
+select * from sales;
+select * from order_items;
+update order_items 
+set unit_price= unit_price * 0.35 
+where quantity in (select quantity from sales where quantity >= 5);
+select * from order_items;
+select * from sales;
+delete from order_items 
+where quantity in (select quantity from sales where quantity <= 4);
+
+select * from order_items;
